@@ -1,21 +1,28 @@
 (ns cljss.page-test
+  (:require [clojure.algo.generic.arithmetic :as gen])
   (:use cljss.core
         cljss.grid
-        hiccup.core
-        [hiccup.page :only (html5 include-css)]
-
-        [clojure.pprint :only (pprint)]
-        clojure.repl))
+        [hiccup.page :only (html5 include-css)]))
 
 ;; css generation
 
 (def w (partial width default-grid ))
 (def gw (partial general-width default-grid ))
 (def col (partial column default-grid))
+(def offset (partial push-offset default-grid))
+
+(defn make-classes [base start  stop]
+  (for [n (range start (inc stop))]
+    (str \. base n)))
 
 (def column-classes
-  (for [n (range 0 25)]
-    (str ".col" n)))
+  (make-classes "col" 0 24))
+
+(def push-classes
+  (make-classes "push" 1 23))
+
+(def pull-classes
+  (make-classes "pull" 1 23))
 
 
 (defrules rules1
@@ -25,18 +32,19 @@
 
   (css-comment "page specific")
   [:section
-   :height :15px
-   :margin-bottom :10px
+    [:div
+     container-mixin
+     :margin-bottom :5px
+     [:div :text-align :center]]
 
-   [[& :> :div] ;container-mixin
+   [[(-> & first-child) :div :div]
 
-    [:div :text-align :center] ; divs inside each row
+     [(-> & (nth-child :even)) :background-color :red]
+     [(-> & (nth-child :odd))] :background-color :blue]
 
-    [[ & (-> :div (nth-child :even))]
-     :background-color :red]
-
-    [[& (-> :div (nth-child :odd))]
-     :background-color :blue]]]
+   [[(-> & (nth-child :2)) :div :div]
+    :box-sizing :border-box
+    :border [:1px :solid :blue]]]
 
   (css-comment "generated grid classes")
   [(set column-classes) column-mixin]
@@ -44,7 +52,18 @@
        column-classes
        (range))
 
-  [:.col0 :display :none])
+  [:.col0 :display :none]
+
+  [(set (into push-classes pull-classes))
+   :position :relative]
+
+  (map #(vector %1 :left (offset %2))
+       push-classes
+       (range))
+
+  (map #(vector %1 :left (gen/- (offset %2)))
+       pull-classes
+       (range)))
 
 
 
@@ -59,12 +78,27 @@
         (str (w n))])
 
 (defn make-row1 [[a b]]
-  [:section
-   [:div (make-div1 a)
-         (make-div1 b)]])
+  [:div (make-div1 a)
+   (make-div1 b)])
 
-(defn make-section1 []
-  (html (map make-row1 seq1)))
+(def section1
+  [:section
+   [:p "The differents sizes: "]
+   (map make-row1 seq1)])
+
+
+
+(def section2
+  [:section
+   [:p "Example of push/pull: "]
+   [:div
+    [:div.col8 "First in html"]
+    [:div.col8 "Second in html"]
+    [:div.col8 "Third in html"]]
+   [:div
+    [:div.col8.push17 "First in html"]
+    [:div.col8 "Second in html"]
+    [:div.col8.pull17 "Third in html"]]])
 
 (defn make-page [& body]
   (html5
@@ -82,6 +116,6 @@
 (def html-file (str output-dir "index.html"))
 
 
-(spit css-file (apply css rules1))
-(spit html-file (make-page (make-section1)))
+;(spit css-file (apply css rules1))
+;(spit html-file (make-page section1 section2))
 

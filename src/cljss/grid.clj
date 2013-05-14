@@ -5,11 +5,12 @@
   (:use cljss.core
         cljss.box))
 
+(def ^:private gen-div (ns-resolve 'clojure.algo.generic.arithmetic '/))
 
 ;; inspired by https://github.com/nathansmith/960-Grid-System/blob/master/code/css/960_12_col.css
 
 (defn- half [something]
-  (gen// something 2))
+  (gen-div something 2))
 
 
 (defn make-grid [unit column gutter]
@@ -22,20 +23,21 @@
 
 (defn general-width [{:keys [unit column gutter]} span]
   (if (zero? span)
-    0
+    (unit 0)
     (gen/* span (gen/+ column gutter))))
 
 (defn width [{:keys [unit column gutter]} span]
   (if (zero? span)
-    0
+    (unit 0)
     (gen/- (gen/* span (gen/+ column gutter)) gutter)))
 
-
+(defn push-offset [grid n]
+  (gen/+ (width grid n) (:gutter grid)))
 
 (defn push [grid box n]
   (assoc box
     :position :relative
-    :left (width grid n)))
+    :left (push-offset grid n)))
 
 (defn pull [grid box n]
    (gen/- (push grid box n)))
