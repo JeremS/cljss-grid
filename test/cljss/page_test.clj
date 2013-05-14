@@ -32,19 +32,25 @@
 
   (css-comment "page specific")
   [:section
-    [:div
-     container-mixin
-     :margin-bottom :5px
-     [:div :text-align :center]]
+   [:div
+    container-mixin
+    :margin-bottom :5px
+    [:div :text-align :center]]]
 
-   [[(-> & first-child) :div :div]
+  [[:.etalon :div :div]
+   :background-color :gray]
 
-     [(-> & (nth-child :even)) :background-color :red]
-     [(-> & (nth-child :odd))] :background-color :blue]
+  [[:#ex1 :div :div]
+   [(-> & (nth-child :even)) :background-color :red]
+   [(-> & (nth-child :odd)) :background-color :blue]]
 
-   [[(-> & (nth-child :2)) :div :div]
-    :box-sizing :border-box
-    :border [:1px :solid :blue]]]
+  [[:#ex2 :div :div]
+   :box-sizing :border-box
+   :border [:1px :solid :blue]]
+
+  [[:#ex3 :div :div]
+   :box-sizing :border-box
+   :border [:1px :solid :blue]]
 
   (css-comment "generated grid classes")
   [(set column-classes) column-mixin]
@@ -59,11 +65,11 @@
 
   (map #(vector %1 :left (offset %2))
        push-classes
-       (range))
+       (range 1 100))
 
   (map #(vector %1 :left (gen/- (offset %2)))
        pull-classes
-       (range)))
+       (range 1 100)))
 
 
 
@@ -81,24 +87,35 @@
   [:div (make-div1 a)
    (make-div1 b)])
 
+(def section-etalon
+  [:section.etalon
+   [:p "Grid:"]
+   [:div
+    (for [n (range 1 25)]
+      [:div.col1 (str n)])]])
+
 (def section1
-  [:section
+  [:section#ex1
    [:p "The differents sizes: "]
    (map make-row1 seq1)])
 
-
-
 (def section2
-  [:section
+  [:section#ex2
    [:p "Example of push/pull: "]
    [:div
     [:div.col8 "First in html"]
     [:div.col8 "Second in html"]
     [:div.col8 "Third in html"]]
    [:div
-    [:div.col8.push17 "First in html"]
+    [:div.col8.push16 "First in html"]
     [:div.col8 "Second in html"]
-    [:div.col8.pull17 "Third in html"]]])
+    [:div.col8.pull16 "Third in html"]]])
+
+(def section3
+  [:section#ex3
+   (for [n (range 1 24)]
+     [:div
+      [:div {:class (str "col1 " "push" n)} (str "p" n)]])])
 
 (defn make-page [& body]
   (html5
@@ -116,6 +133,11 @@
 (def html-file (str output-dir "index.html"))
 
 
-;(spit css-file (apply css rules1))
-;(spit html-file (make-page section1 section2))
+(spit css-file (apply css rules1))
+(spit html-file (make-page section-etalon
+                           section1
+                           section-etalon
+                           section2
+                           section-etalon
+                           section3))
 

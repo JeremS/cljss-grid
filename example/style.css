@@ -26,13 +26,20 @@ section div {
   section div div {
     text-align: center;
   }
-section:first-child div div {
+.etalon div div {
+  background-color: gray;
+}
+#ex1 div div:nth-child(even) {
+  background-color: red;
+}
+#ex1 div div:nth-child(odd) {
   background-color: blue;
 }
-  section:first-child div div:nth-child(even) {
-    background-color: red;
-  }
-section:nth-child(2) div div {
+#ex2 div div {
+  border: 1px solid blue;
+  box-sizing: border-box;
+}
+#ex3 div div {
   border: 1px solid blue;
   box-sizing: border-box;
 }
@@ -242,140 +249,140 @@ section:nth-child(2) div div {
   position: relative;
 }
 .push1 {
-  left: 10px;
-}
-.push2 {
   left: 40px;
 }
-.push3 {
+.push2 {
   left: 80px;
 }
-.push4 {
+.push3 {
   left: 120px;
 }
-.push5 {
+.push4 {
   left: 160px;
 }
-.push6 {
+.push5 {
   left: 200px;
 }
-.push7 {
+.push6 {
   left: 240px;
 }
-.push8 {
+.push7 {
   left: 280px;
 }
-.push9 {
+.push8 {
   left: 320px;
 }
-.push10 {
+.push9 {
   left: 360px;
 }
-.push11 {
+.push10 {
   left: 400px;
 }
-.push12 {
+.push11 {
   left: 440px;
 }
-.push13 {
+.push12 {
   left: 480px;
 }
-.push14 {
+.push13 {
   left: 520px;
 }
-.push15 {
+.push14 {
   left: 560px;
 }
-.push16 {
+.push15 {
   left: 600px;
 }
-.push17 {
+.push16 {
   left: 640px;
 }
-.push18 {
+.push17 {
   left: 680px;
 }
-.push19 {
+.push18 {
   left: 720px;
 }
-.push20 {
+.push19 {
   left: 760px;
 }
-.push21 {
+.push20 {
   left: 800px;
 }
-.push22 {
+.push21 {
   left: 840px;
 }
-.push23 {
+.push22 {
   left: 880px;
 }
-.pull1 {
-  left: -10px;
+.push23 {
+  left: 920px;
 }
-.pull2 {
+.pull1 {
   left: -40px;
 }
-.pull3 {
+.pull2 {
   left: -80px;
 }
-.pull4 {
+.pull3 {
   left: -120px;
 }
-.pull5 {
+.pull4 {
   left: -160px;
 }
-.pull6 {
+.pull5 {
   left: -200px;
 }
-.pull7 {
+.pull6 {
   left: -240px;
 }
-.pull8 {
+.pull7 {
   left: -280px;
 }
-.pull9 {
+.pull8 {
   left: -320px;
 }
-.pull10 {
+.pull9 {
   left: -360px;
 }
-.pull11 {
+.pull10 {
   left: -400px;
 }
-.pull12 {
+.pull11 {
   left: -440px;
 }
-.pull13 {
+.pull12 {
   left: -480px;
 }
-.pull14 {
+.pull13 {
   left: -520px;
 }
-.pull15 {
+.pull14 {
   left: -560px;
 }
-.pull16 {
+.pull15 {
   left: -600px;
 }
-.pull17 {
+.pull16 {
   left: -640px;
 }
-.pull18 {
+.pull17 {
   left: -680px;
 }
-.pull19 {
+.pull18 {
   left: -720px;
 }
-.pull20 {
+.pull19 {
   left: -760px;
 }
-.pull21 {
+.pull20 {
   left: -800px;
 }
-.pull22 {
+.pull21 {
   left: -840px;
 }
-.pull23 {
+.pull22 {
   left: -880px;
+}
+.pull23 {
+  left: -920px;
 }
