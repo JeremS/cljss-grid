@@ -5,7 +5,8 @@
 
 
 
-(def default-box (sorted-map))
+(def default-box
+  (sorted-map))
 
 (def ^:private box-properties-names
   #{:border :padding :margin :width :height})

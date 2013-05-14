@@ -8,6 +8,8 @@
                  [jeremys/cljss-core  "0.2.1"]
                  [jeremys/cljss-units "0.2.1"]]
 
+  :plugins [[codox "0.6.4"]]
+
   :profiles {:dev
              {:dependencies [[org.clojure/tools.trace "0.7.5"]
                              [midje "1.5.1"]
