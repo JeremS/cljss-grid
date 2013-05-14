@@ -14,37 +14,43 @@
 (def col (partial column default-grid))
 
 (def column-classes
-  (for [n (range 1 25)]
+  (for [n (range 0 25)]
     (str ".col" n)))
+
 
 (defrules rules1
   (css-comment "general")
   [:#container
    :width (gw 24)]
 
-   [:section
-    :height :15px
-    :margin-bottom :10px
+  (css-comment "page specific")
+  [:section
+   :height :15px
+   :margin-bottom :10px
 
-    [[& :> :div] ;container-mixin
+   [[& :> :div] ;container-mixin
 
-      [[ & (-> :div (nth-child :even))]
-       :background-color :red]
+    [:div :text-align :center] ; divs inside each row
 
-      [[& (-> :div (nth-child :odd))]
-       :background-color :blue]]]
+    [[ & (-> :div (nth-child :even))]
+     :background-color :red]
 
+    [[& (-> :div (nth-child :odd))]
+     :background-color :blue]]]
 
+  (css-comment "generated grid classes")
   [(set column-classes) column-mixin]
   (map #(vector %1 (col %2) )
        column-classes
-       (range 1 25)))
+       (range))
+
+  [:.col0 :display :none])
 
 
 
 ;; html generation
 
-(def seq1 (for [n (range 1 24)]
+(def seq1 (for [n (range 25)]
             [n (- 24 n)]))
 
 

@@ -3,10 +3,7 @@
             [cljss.units.length :as len]
             [clojure.algo.generic.arithmetic :as gen])
   (:use cljss.core
-        cljss.box
-
-        [clojure.pprint :only (pprint)]
-        ))
+        cljss.box))
 
 
 ;; inspired by https://github.com/nathansmith/960-Grid-System/blob/master/code/css/960_12_col.css
