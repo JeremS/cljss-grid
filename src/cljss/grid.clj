@@ -1,20 +1,17 @@
 (ns cljss.grid
-  (:require [cljss.box :as box]
-            [cljss.units.length :as len]
+  (:require [cljss.units.length :as len]
             [clojure.algo.generic.arithmetic :as gen])
-  (:use cljss.core
-        cljss.box
+  (:use cljss.core))
 
-        clojure.repl))
+;; inspired by https://github.com/nathansmith/960-Grid-System/blob/master/code/css/960_24_col.css
 
-;; inspired by https://github.com/nathansmith/960-Grid-System/blob/master/code/css/960_12_col.css
+(def container-mixin
+  "Mixin defining a row."
+  {:overflow :hidden
+   :margin-left :auto
+   :margin-right :auto})
 
-(def column-mixin
-  "Positionnig mixin for column elements."
-  {:float :left
-   :display :inline})
-
-(def clearer
+(def clear
   "Mixin rendering an element invisible with the property
   of 'clearing both'.
 
@@ -42,12 +39,15 @@
    :width 0
    :height 0])
 
-(def container-mixin
-  (list
-   :overflow :hidden
-   :margin-left :auto
-   :margin-right :auto
-   clearfixed))
+
+(def alpha
+  "Mixin for the first column of an internal column."
+  {:margin-left "0px"})
+
+(def omega
+  "Mixin for the last column of an internal column."
+  {:margin-right "0px"})
+
 
 (def ^:private gen-div (ns-resolve 'clojure.algo.generic.arithmetic '/))
 
@@ -82,77 +82,79 @@
     (u 0)
     (gen/- (general-width grid span) g)))
 
+(def push-pull-style
+  "Default style of a pushable/pullable column."
+  {:position :relative})
+
 (defn push-offset
-  "Compute the lenght for a push or a pull."
+  "Compute the length of a push or a pull."
   [grid n]
   (gen/+ (width grid n) (:gutter grid)))
 
 (defn push
-  "Generates a map mixin or assoc to one,
-  the necessary css properties to push an element."
-  ([grid n]
-   (push grid default-box n))
-  ([grid box n]
-   (assoc box
-     :position :relative
-     :left (push-offset grid n))))
+  "Generates a map containing the push offeting style."
+  [grid n]
+  {:left (push-offset grid n)})
 
 (defn pull
-  "Generates a map mixin or assoc to one,
-  the necessary css properties to pull an element."
-  ([grid n]
-   (pull grid default-box n))
-  ([grid box n]
-   (gen/- (push grid box n))))
+  "Generates a map containing the pull offeting style."
+  [grid n]
+  {:left (gen/- (push-offset grid n))})
 
 (defn prefix
-  "Generates a map mixin (or assoc to one),
-  the necessary css properties to prefix an element.
+  "Generates a map mixin containing the necessary css
+  properties to prefix an element.
+
   Prefixing allows to void space at the left of
   the prefixed element."
-  ([grid n]
-   (prefix grid default-box n))
-  ([grid box n]
-   (resize box :padding :left (width grid n))))
+  [grid n]
+  {:padding-left (width grid n)})
 
 (defn suffix
-  "Generates a map mixin (or assoc to one),
-  the necessary css properties to suffix an element.
+  "Generates a map mixin containing the necessary css
+  properties to suffix an element.
 
-  Suffixing allows to void space at the right of the
-  suffixed element."
-  ([grid n]
-   (suffix grid default-box n))
-  ([grid box n]
-   (resize box :padding :right (width grid n))))
+  Prefixing allows to void space at the right of
+  the suffixed element."
+  [grid n]
+  {:padding-right (width grid n)})
 
+(defn make-column [{g :gutter :as grid}]
+  "Positionnig mixin for column elements."
+  {:float :left
+   :display :inline
+   :margin-left (half g)
+   :margin-right (half g)})
 
-(defn column
-  "Generates a mixin specifing size and push/pull properties
-  of an element given a grid and possibly some options:
-   - :push see push fn
-   - :pull see pull fn
-   - :prefix see prefix fn
-   - :suffix see suffix fn"
-  [{g :gutter :as grid} span & {->p :push <-p :pull pre :prefix suf :suffix}]
-  (when (and ->p <-p)
-    (throw (ex-info "Can't push and pull at the same time." {})))
-  (cond-> default-box
-          true (resize :width (width grid span))
-          true (resize :margin :lr (half g))
-          ->p ((partial push grid) ->p)
-          <-p ((partial pull grid) <-p)
-          pre ((partial prefix grid) pre)
-          suf ((partial suffix grid) suf)))
-
-(alter-meta! #'column assoc :arglists '([grid span & opts]))
-
-(defn sem-column
-  "Returns the merging of the result of the column function
-  with the default column mixin."
-  [grid span & opts]
-  (merge column-mixin
-         (apply column grid span opts)))
+(alter-meta! #'make-column assoc :arglists '([grid]))
 
 
+(defn make-column-width
+  "Generates a mixin specifing the width property
+  of an element given a grid and the number of grid columns
+  the element spans onto."
+  [grid span]
+  {:width (width grid span)})
 
+(def semantic-container-mixin
+  "Add the container style to a semantic row."
+  (list container-mixin clearfixed))
+
+(defn semantic-column
+  "Returns a mixin making an element a column spanning
+  onto `span` grid columns."
+  [grid span]
+  (merge (make-column grid)
+         (make-column-width grid span)))
+
+(defn semantic-push [grid n]
+  "Returns a mixin making an element pushed
+  of `n`columns."
+  (merge push-pull-style
+         (push grid n)))
+
+(defn semantic-pull [grid n]
+  "Returns a mixin making an element pulled
+  of `n`columns."
+  (merge push-pull-style
+         (pull grid n)))
