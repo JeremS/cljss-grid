@@ -3,6 +3,8 @@
   (:use cljss.core
         [hiccup.page :only (html5 include-css)]))
 
+;; Generation of the demo page.
+
 (def width (partial grid/width grid/default-grid ))
 (def general-width (partial grid/general-width grid/default-grid ))
 
@@ -69,8 +71,8 @@
 (defn make-page [& body]
   (html5
    [:head
-    (include-css "../css/style.css")
-    (include-css "./example-style.css")]
+    (include-css "../css/grid.css")
+    (include-css "./style.css")]
    [:body
     [:div#container body]]))
 
@@ -97,7 +99,7 @@
                      (System/getProperty "file.separator")))
 
 (def html-file (str output-dir "index.html"))
-(def css-file (str output-dir "example-style.css"))
+(def css-file (str output-dir "style.css"))
 
 
 (spit html-file (make-page section-etalon

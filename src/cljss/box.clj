@@ -3,7 +3,7 @@
             [clojure.algo.generic.arithmetic :as gen])
   (:use clojure.tools.trace))
 
-
+;; utilities around the css box model
 
 (def default-box
   (sorted-map))

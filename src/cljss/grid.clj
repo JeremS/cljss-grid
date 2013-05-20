@@ -126,7 +126,7 @@
    :margin-left (half g)
    :margin-right (half g)})
 
-(alter-meta! #'make-column assoc :arglists '([grid]))
+;(alter-meta! #'make-column assoc :arglists '([grid]))
 
 
 (defn make-column-width

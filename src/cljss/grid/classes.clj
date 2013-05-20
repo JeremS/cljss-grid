@@ -90,9 +90,9 @@
                      "css"
                      (System/getProperty "file.separator")))
 
-(def css-file (str output-dir "style.css"))
+(def css-file (str output-dir "grid.css"))
 
 
-(spit css-file (apply compact-css grid-rules))
+;(spit css-file (apply compact-css grid-rules))
 
 
