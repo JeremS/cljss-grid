@@ -126,8 +126,6 @@
    :margin-left (half g)
    :margin-right (half g)})
 
-;(alter-meta! #'make-column assoc :arglists '([grid]))
-
 
 (defn make-column-width
   "Generates a mixin specifing the width property
